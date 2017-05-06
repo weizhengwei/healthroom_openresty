@@ -1,0 +1,431 @@
+curl -H "Content-Type: application/json" -d "@uploadHeighWeight.json" http://localhost:5000/post
+
+
+curl  -d "@userinfo" localhost:9999/dataplatform/api/uploadHeighWeight
+
+
+
+
+
+
+健康小屋对接：
+1.建表sql
+
+
+居民表：
+CREATE TABLE 'Resident'(
+	'id' tinyint(1) NOT NULL AUTO_INCREMENT,
+	'dataStatus' tinyint(1) NOT NULL COMMENT '数据状态',
+	'EMPI' varchar(32) NOT NULL COMMENT '居民EMPI',
+	'name' varchar(32) NOT NULL COMMENT '居民姓名',
+	'gender' tinyint(1) NOT NULL COMMENT '性别',
+	'birthday' date DEFAULT NULL COMMENT '生日',
+	'cardNo' varchar(32) NOT NULL COMMENT '卡号',
+	'company' varchar(32) DEFAULT NULL COMMENT '工作单位',
+	'phone' varchar(32) DEFAULT NULL COMMENT '联系电话',
+	'contactsName' varchar(32) DEFAULT NULL COMMENT '联系人姓名',
+	'contactsPhone' varchar(32) DEFAULT NULL COMMENT '联系人电话',
+	'residenceType' tinyint(1) DEFAULT NULL COMMENT '户籍类型',
+	'nation' varchar(32) DEFAULT NULL COMMENT '民族',
+	'bloodType' varchar(32) DEFAULT NULL COMMENT '血型',
+	'RH' varchar(32) DEFAULT NULL COMMENT 'RH阴性',
+	'education' varchar(32)DEFAULT NULL COMMENT '教育程度',
+	'occupation' varchar(32)DEFAULT NULL COMMENT '职业',
+	'maritalStatus' varchar(32)DEFAULT NULL COMMENT '婚姻状态',
+	'paymentMode' varchar(128)DEFAULT NULL COMMENT '医疗费用支付方式',
+	'paymentModeAdditon' varchar(128)DEFAULT NULL COMMENT '医疗费用支付方式补充信息',
+	'drugAlleyHistory' varchar(128)DEFAULT NULL COMMENT '药物过敏史',
+	'dragAlleyHistoryAddition' varchar(128)DEFAULT NULL COMMENT '药物过敏史补充信息',
+	'exposureHistory' varchar(128) DEFAULT NULL COMMENT '暴露史',
+	'disease' varchar(128) DEFAULT NULL COMMENT '疾病数据列表',
+	'operation' varchar(128) DEFAULT NULL COMMENT '手术数据列表',
+	'traumatism' varchar(128) DEFAULT NULL COMMENT '外伤数据列表',
+	'transfusion' varchar(128) DEFAULT NULL COMMENT '输血数据列表'
+	'familyHistory' varchar(100) DEFAULT NULL COMMENT '家族史数据列表'
+	'geneticDiseaseHistory' varchar(100) DEFAULT NULL COMMENT '遗传病史'
+	'disability' varchar(100) DEFAULT NULL COMMENT '残疾情况'
+	'disabilityAddition' varchar(100) DEFAULT NULL COMMENT '残疾情况补充'
+	'livestokBar' int(100) DEFAULT NULL COMMENT '禽畜栏数据字典LivestockBar'
+	'toilet' int(1) DEFAULT NULL COMMENT '厕所数据字典Toilet',
+	PRIMARY KEY (`id`)
+)DEFAULT CHARSET=utf8 COMMENT='居民信息表';
+
+
+NOT NULL AUTO_INCREMENT,
+DEFAULT NULL COMMENT '数据状态',
+DEFAULT '0' COMMENT '数据读取状态：0:未读，1:已读',
+
+
+
+
+	'dataStatus' TINYINT(1) COMMENT '数据状态',
+	'EMPI' VARCHAR(32) NOT NULL COMMENT '居民EMPI',
+
+
+
+
+CREATE TABLE `cbf_user` (
+  `USERID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `USERNAME` varchar(100) DEFAULT NULL COMMENT '登录名',
+  `PASSWORD` varchar(50) DEFAULT NULL COMMENT '密码',
+  `STATUS` char(1) DEFAULT NULL COMMENT '状态1.启用，0.禁用',
+  `DESCS` text COMMENT '描述(真实姓名)',
+  `ISPERMISSIONUSER` char(1) DEFAULT '0' COMMENT '是否激活绑定[0=未绑定，1=绑定]',
+  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
+  `UPDATEDTIME` datetime DEFAULT NULL COMMENT '修改时间',
+  `EXPIRATIONTIME` datetime DEFAULT NULL,
+  `EMPLOYEEID` bigint(20) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
+  `phone` varchar(20) DEFAULT NULL COMMENT '手机号码',
+  `operate_code` varchar(200) DEFAULT NULL,
+  `identity_cards` varchar(20) DEFAULT NULL COMMENT '身份证件号码',
+  `type` varchar(20) DEFAULT NULL COMMENT '账户类型（多参仪0居民、1医生、2领导）',
+  `EMPI` varchar(32) DEFAULT NULL COMMENT '居民统一ID',
+  `FILE_ID` varchar(60) DEFAULT NULL COMMENT '图像id',
+  `FILE_NAME` varchar(60) DEFAULT NULL COMMENT '图像名称',
+  PRIMARY KEY (`USERID`),
+  UNIQUE KEY `USERNAME` (`USERNAME`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=431126199005052306 DEFAULT CHARSET=utf8 COMMENT='用户登录信息表'
+
+
+CREATE TABLE `yhxz` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `YHBM` varchar(40) DEFAULT NULL COMMENT '用户编码',
+  `YHMC` varchar(20) DEFAULT NULL COMMENT '用户名称',
+  `CHOL` varchar(20) DEFAULT NULL COMMENT '总胆固醇',
+  `HDL` varchar(20) DEFAULT NULL COMMENT '高密度脂蛋白',
+  `TG` varchar(20) DEFAULT NULL COMMENT '甘油三酯',
+  `LDL` varchar(20) DEFAULT NULL COMMENT '低密度脂蛋白',
+  `JCRQ` datetime DEFAULT NULL COMMENT '日期',
+  `SHLY` varchar(30) DEFAULT '0' COMMENT ' 数据来源[0=多参仪,1=H8,2=H10,3=健康云平台]',
+  `RESULT` varchar(20) DEFAULT NULL COMMENT '结果[一体机]',
+  `PID` varchar(32) DEFAULT NULL,
+  `MACHINE_ID` varchar(20) DEFAULT NULL COMMENT '机器设备号[一体机]',
+  `isDelete` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `ORG_CODE` varchar(100) DEFAULT NULL,
+  `ORG_NAME` varchar(100) DEFAULT NULL,
+  `YSBM` varchar(20) DEFAULT NULL,
+  `YSMC` varchar(20) DEFAULT NULL,
+  `state` varchar(1) DEFAULT '0' COMMENT '数据读取状态：0:未读，1:已读',
+  `EMPI` varchar(32) DEFAULT NULL COMMENT '居民统一ID',
+  `DOCTOR_EMPI` varchar(32) DEFAULT NULL COMMENT '医生统一ID',
+  `processed` int(11) DEFAULT '0' COMMENT '0未处理 1已处理',
+  PRIMARY KEY (`ID`),
+  KEY `EMPI` (`EMPI`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='血脂表'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE `tb_heighwidthdata` (
+  `dataID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `familyCode` varchar(255) DEFAULT NULL,
+  `familyName` varchar(255) DEFAULT NULL,
+  `orgCode` varchar(255) DEFAULT NULL,
+  `orgName` varchar(255) DEFAULT NULL,
+  `dataSource` tinyint(4) DEFAULT NULL,
+  `machineID` varchar(255) DEFAULT NULL,
+  `examDate` datetime NOT NULL,
+  `residentEMPI` varchar(255) NOT NULL,
+  `residentName` varchar(255) DEFAULT NULL,
+  `examDoctorEMPI` varchar(255) DEFAULT NULL,
+  `examDoctorName` varchar(255) DEFAULT NULL,
+  `auditDoctorEMPI` varchar(255) DEFAULT NULL,
+  `auditDoctorName` varchar(255) DEFAULT NULL,
+  `heigh` float DEFAULT NULL,
+  `weight` float DEFAULT NULL,
+  `bmi` float DEFAULT NULL,
+  `conclusion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`dataID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+
+
+
+CREATE TABLE `tb_bwhdata` (
+  `dataID` bigint(20) NOT NULL,
+  `familyCode` varchar(255) DEFAULT NULL,
+  `familyName` varchar(255) DEFAULT NULL,
+  `orgCode` varchar(255) DEFAULT NULL,
+  `orgName` varchar(255) DEFAULT NULL,
+  `dataSource` tinyint(4) DEFAULT NULL,
+  `machineID` varchar(255) DEFAULT NULL,
+  `examDate` datetime NOT NULL,
+  `residentEMPI` varchar(255) NOT NULL,
+  `residentName` varchar(255) DEFAULT NULL,
+  `examDoctorEMPI` varchar(255) DEFAULT NULL,
+  `examDoctorName` varchar(255) DEFAULT NULL,
+  `auditDoctorEMPI` varchar(255) DEFAULT NULL,
+  `auditDoctorName` varchar(255) DEFAULT NULL,
+  `hip` float DEFAULT NULL,
+  `bust` float DEFAULT NULL,
+  `waist` float DEFAULT NULL,
+  `conclusion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`dataID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+
+
+
+
+
+CREATE TABLE `tb_electronicvisiondata` (
+  `dataID` bigint(20) NOT NULL,
+   `familyCode` varchar(255) DEFAULT NULL,
+  `familyName` varchar(255) DEFAULT NULL,
+  `orgCode` varchar(255) DEFAULT NULL,
+  `orgName` varchar(255) DEFAULT NULL,
+  `dataSource` tinyint(4) DEFAULT NULL,
+  `machineID` varchar(255) DEFAULT NULL,
+  `examDate` datetime NOT NULL,
+  `residentEMPI` varchar(255) NOT NULL,
+  `residentName` varchar(255) DEFAULT NULL,
+  `examDoctorEMPI` varchar(255) DEFAULT NULL,
+  `examDoctorName` varchar(255) DEFAULT NULL,
+  `auditDoctorEMPI` varchar(255) DEFAULT NULL,
+  `auditDoctorName` varchar(255) DEFAULT NULL,
+  `leftEyeHeight` varchar(32) DEFAULT NULL,
+  `righteyeheight` varchar(32) DEFAULT NULL,
+  `bothEyesHeight` varchar(32) DEFAULT NULL,
+  `leftEyeHeightLog` varchar(32) DEFAULT NULL,
+  `rightEyeHeightLog` varchar(32) DEFAULT NULL,
+  `bothEyesHeightLog` varchar(32) DEFAULT NULL,
+  `leftEyeHeightSpeed` varchar(32) DEFAULT NULL,
+  `rightEyeHeightSpeed` varchar(32) DEFAULT NULL,
+  `bothEyesHeightSpeed` varchar(32) DEFAULT NULL,
+  `leftEyeLow` varchar(32) DEFAULT NULL,
+  `rightEyeLow` varchar(32) DEFAULT NULL,
+  `bothEyesLow` varchar(32) DEFAULT NULL,
+  `leftEyeLowLog` varchar(32) DEFAULT NULL,
+  `rightEyeLowLog` varchar(32) DEFAULT NULL,
+  `bothEyesLowLog` varchar(32) DEFAULT NULL,
+  `leftEyeLowSpeed` varchar(32) DEFAULT NULL,
+  `rightEyeLowSpeed` varchar(32) DEFAULT NULL,
+  `bothEyesLowSpeed` varchar(32) DEFAULT NULL,
+  `leftEyeBright` varchar(32) DEFAULT NULL,
+  `rightEyeBright` varchar(32) DEFAULT NULL,
+  `bothEyesBright` varchar(32) DEFAULT NULL,
+  `leftEyeBrightLog` varchar(32) DEFAULT NULL,
+  `rightEyeBrightLog` varchar(32) DEFAULT NULL,
+  `bothEyesBrightLog` varchar(32) DEFAULT NULL,
+  `leftEyeBrightSpeed` varchar(32) DEFAULT NULL,
+  `rightEyeBrightSpeed` varchar(32) DEFAULT NULL,
+  `bothEyesBrightSpeed` varchar(32) DEFAULT NULL,
+  `leftEyeHeightAvl` varchar(32) DEFAULT NULL,
+  `rightEyeHeightAvl` varchar(32) DEFAULT NULL,
+  `bothEyesHeightAvl` varchar(32) DEFAULT NULL,
+  `leftEyeLowAvl` varchar(32) DEFAULT NULL,
+  `rightEyeLowAvl` varchar(32) DEFAULT NULL,
+  `bothEyesLowAvl` varchar(32) DEFAULT NULL,
+  `leftEyeBrightAvl` varchar(32) DEFAULT NULL,
+  `rightEyeBrightAvl` varchar(32) DEFAULT NULL,
+  `bothEyesBrightAvl` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`dataID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+
+
+
+
+
+CREATE TABLE `tb_bonedensitydata` (
+  `dataID` bigint(20) NOT NULL,
+   `familyCode` varchar(255) DEFAULT NULL,
+  `familyName` varchar(255) DEFAULT NULL,
+  `orgCode` varchar(255) DEFAULT NULL,
+  `orgName` varchar(255) DEFAULT NULL,
+  `dataSource` tinyint(4) DEFAULT NULL,
+  `machineID` varchar(255) DEFAULT NULL,
+  `examDate` datetime NOT NULL,
+  `residentEMPI` varchar(255) NOT NULL,
+  `residentName` varchar(255) DEFAULT NULL,
+  `examDoctorEMPI` varchar(255) DEFAULT NULL,
+  `examDoctorName` varchar(255) DEFAULT NULL,
+  `auditDoctorEMPI` varchar(255) DEFAULT NULL,
+  `auditDoctorName` varchar(255) DEFAULT NULL,
+  `acousticveLocity` varchar(32) DEFAULT NULL,
+  `tValue` varchar(32) DEFAULT NULL,
+  `zValue` varchar(32) DEFAULT NULL,
+  `thScale` varchar(32) DEFAULT NULL,
+  `toScale` varchar(32) DEFAULT NULL,
+  `zYear` varchar(32) DEFAULT NULL,
+  `riskLeavel` varchar(32) DEFAULT NULL,
+  `oi` varchar(32) DEFAULT NULL,
+  `youngAdult` varchar(32) DEFAULT NULL,
+  `ageMatched` varchar(32) DEFAULT NULL,
+  `bua` varchar(32) DEFAULT NULL,
+  `opr` varchar(32) DEFAULT NULL,
+  `conclusion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`dataID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+
+
+
+CREATE TABLE `tb_bodycomposiondata` (
+  `dataID` bigint(20) NOT NULL,
+  `familyCode` varchar(255) DEFAULT NULL,
+  `familyName` varchar(255) DEFAULT NULL,
+  `orgCode` varchar(255) DEFAULT NULL,
+  `orgName` varchar(255) DEFAULT NULL,
+  `dataSource` tinyint(4) DEFAULT NULL,
+  `machineID` varchar(255) DEFAULT NULL,
+  `examDate` datetime NOT NULL,
+  `residentEMPI` varchar(255) NOT NULL,
+  `residentName` varchar(255) DEFAULT NULL,
+  `examDoctorEMPI` varchar(255) DEFAULT NULL,
+  `examDoctorName` varchar(255) DEFAULT NULL,
+  `auditDoctorEMPI` varchar(255) DEFAULT NULL,
+  `auditDoctorName` varchar(255) DEFAULT NULL,
+  `abdominalBodyFatmass` varchar(32) DEFAULT NULL,
+  `abdominalBodyFatmassAdjust` varchar(32) DEFAULT NULL,
+  `trunkSoftleanmassFlag` varchar(32) DEFAULT NULL,
+  `visceralFatArea` varchar(32) DEFAULT NULL,
+  `visceralFatmass` varchar(32) DEFAULT NULL,
+  `weight` varchar(32) DEFAULT NULL,
+  `weightAdjust` varchar(32) DEFAULT NULL,
+  `weightHighLimit` varchar(32) DEFAULT NULL,
+  `weightlowlimit` varchar(32) DEFAULT NULL,
+  `whr` varchar(32) DEFAULT NULL,
+  `abdominalBodyFatmassHighLimit` varchar(32) DEFAULT NULL,
+  `abdominalBodyFatmassLowLimit` varchar(32) DEFAULT NULL,
+  `adbominalSoftleanmass` varchar(32) DEFAULT NULL,
+  `basicMetabolicrate` varchar(32) DEFAULT NULL,
+  `bmi` varchar(32) DEFAULT NULL,
+  `bmiHighLimit` varchar(32) DEFAULT NULL,
+  `bmiLowLimit` varchar(32) DEFAULT NULL,
+  `bodyAge` varchar(32) DEFAULT NULL,
+  `bodyFatRate` varchar(32) DEFAULT NULL,
+  `bodyFatHeighLimit` varchar(32) DEFAULT NULL,
+  `bodyFatLowLimit` varchar(32) DEFAULT NULL,
+  `bodyType` varchar(32) DEFAULT NULL,
+  `extracellularFluid` varchar(32) DEFAULT NULL,
+  `impedance` varchar(32) DEFAULT NULL,
+  `intracellularFluid` varchar(32) DEFAULT NULL,
+  `leanBodymass` varchar(32) DEFAULT NULL,
+  `leanBodymassHighLimit` varchar(32) DEFAULT NULL,
+  `leanBodymassLowLimit` varchar(32) DEFAULT NULL,
+  `leftArmBodyFatmass` varchar(32) DEFAULT NULL,
+  `leftArmSoftleanmass` varchar(32) DEFAULT NULL,
+  `leftArmsoftleanmassFlag` varchar(32) DEFAULT NULL,
+  `leftLegBodyFatmass` varchar(32) DEFAULT NULL,
+  `leftLegSoftleanmass` varchar(32) DEFAULT NULL,
+  `leftLegSoftleanmassFlag` varchar(32) DEFAULT NULL,
+  `massOfBodyFat` varchar(32) DEFAULT NULL,
+  `mineral` varchar(32) DEFAULT NULL,
+  `mineralHighLimit` varchar(32) DEFAULT NULL,
+  `mineralLowLimit` varchar(32) DEFAULT NULL,
+  `obesexaxis` varchar(32) DEFAULT NULL,
+  `protein` varchar(32) DEFAULT NULL,
+  `proteinHighLimit` varchar(32) DEFAULT NULL,
+  `proteinLowLimit` varchar(32) DEFAULT NULL,
+  `rightArmbodyFatmass` varchar(32) DEFAULT NULL,
+  `rightArmSoftleanmassFlag` varchar(32) DEFAULT NULL,
+  `rightLegBodyFatmass` varchar(32) DEFAULT NULL,
+  `rightLegSoftleanmassFlag` varchar(32) DEFAULT NULL,
+  `rigtArmSoftleanmass` varchar(32) DEFAULT NULL,
+  `rigtLegSoftleanmass` varchar(32) DEFAULT NULL,
+  `softleanmass` varchar(32) DEFAULT NULL,
+  `softleanmassAdjust` varchar(32) DEFAULT NULL,
+  `softleanmassHighLimit` varchar(32) DEFAULT NULL,
+  `softleanmassLowLimit` varchar(32) DEFAULT NULL,
+  `standardWeight` varchar(32) DEFAULT NULL,
+  `subcutaneousFatmass` varchar(32) DEFAULT NULL,
+  `totalBodyWater` varchar(32) DEFAULT NULL,
+  `totalBodyWaterHighLimit` varchar(32) DEFAULT NULL,
+  `totalBodyWaterLowLimit` varchar(32) DEFAULT NULL,
+  `totalEnergyConsumption` varchar(32) DEFAULT NULL,
+  `conclusion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`dataID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+
+{
+    "familyCode": "familyCode",
+    "familyName": "familyName",
+    "orgCode": "orgCode",
+    "orgName": "orgName",
+    "dataSource": 1,
+    "machineID": "12341234",
+    "data": [
+        {
+            "examData": "2017-11-11 11:11:11",
+            "residentEMPI": "residentEMPI",
+            "residentName": "residentName",
+            "heigh": 180,
+            "weight": 55,
+            "bmi": 23,
+            "conclusion": "aaabbbcccdddeeefff"
+        },
+        {
+            "examData": "2017-12-12 12:12:12",
+            "residentEMPI": "residentEMPI",
+            "residentName": "residentName",
+            "heigh": 180,
+            "weight": 55,
+            "bmi": 23,
+            "conclusion": "aaabbbcccdddeeefff"
+        }
+    ]
+}
+
+
+
+xx.com/dataplatform/api/uploadBWH
+
+http://118.193.241.37:9090/dataplatform/api/uploadBWH
+http://118.193.241.37:9090/dataplatform/api/uploadBodyComposion.lua
+http://118.193.241.37:9090/dataplatform/api/uploadBoneDensity.lua
+http://118.193.241.37:9090/dataplatform/api/uploadBPData.lua
+http://118.193.241.37:9090/dataplatform/api/uploadBWH.lua
+http://118.193.241.37:9090/dataplatform/api/uploadElectronicVision.lua
+http://118.193.241.37:9090/dataplatform/api/uploadHeighWeight.lua
+http://118.193.241.37:9090/dataplatform/api/uploadResidentData.lua
+
+上传居民数据
+http://118.193.241.37:9090/dataplatform/api/uploadResidentData.lua
+
+上传身高体重数据
+http://118.193.241.37:9090/dataplatform/api/uploadHeighWeight.lua
+
+上传电子视力数据
+http://118.193.241.37:9090/dataplatform/api/uploadElectronicVision.lua
+
+上传三围数据
+http://118.193.241.37:9090/dataplatform/api/uploadBWH.lua
+
+上传人体成分数据
+http://118.193.241.37:9090/dataplatform/api/uploadBodyComposion.lua
+
+上传骨密度数据
+http://118.193.241.37:9090/dataplatform/api/uploadBoneDensity.lua
+
+
+
+
+
+
+
+
